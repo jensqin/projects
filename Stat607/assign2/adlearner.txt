@@ -1,0 +1,71 @@
+def weak_learner(instances, labels, dist):
+
+    """ Returns the best 1-d threshold classifier.
+
+    A 1-d threshold classifier is of the form
+
+    lambda x: s*x[j] < threshold
+
+    where s is +1/-1,
+          j is a dimension
+      and threshold is real number in [-1, 1].
+
+    The best classifier is chosen to minimize the weighted misclassification
+    error using weights from the distribution dist.
+
+    """
+    n, d = instances.shape
+    sort_mat = np.argsort(instances.T).T
+    sort_labels = labels[sort_mat]
+    loop_mat = np.array([(np.sign((i%n+i/n-n+0.5)*(i%n+i/n-2*n+0.5))+1)/2 \
+                         for i in range(2*n*n)]).reshape(2*n,n).T
+    fal = np.array([[dist.dot(abs(x-y)) for y in loop_mat.T] for x in sort_labels.T])
+    posi = np.argmin(fal)
+    dimension = posi/(2*n)
+    vec = instances[:,dimension]
+    posin = posi%n
+    s = np.sign(posin + 0.5 - n)
+    dimension = posi%d
+    if s == 1:
+        threshold = instances[sort_mat[n-1-posin, dimension], dimension]+1e-10
+    else:
+        threshold = instances[sort_mat[n-1-posin, dimension], dimension]+1e-10
+    return lambda x: x[dimension] < threshold if s==1 else x[dimension] > threshold
+
+def weak_learner(instances, labels, dist):
+    
+    """ Returns the best 1-d threshold classifier.
+
+    A 1-d threshold classifier is of the form
+
+    lambda x: s*x[j] < threshold
+
+    where s is +1/-1,
+          j is a dimension
+      and threshold is real number in [-1, 1].
+
+    The best classifier is chosen to minimize the weighted misclassification
+    error using weights from the distribution dist.
+
+    """
+    n,d = instances.shape
+    def weak(X,s,threshold,dim):
+        h_val = 1 if s*X[dim]<threshold else 0
+        return h_val
+    
+    min_error = 1000
+    s,dim,threshold = 1,0,0.0
+    for J in range(d):
+        for th in np.arange(-1.0, 1.01, 0.01):
+            h_p = lambda x:weak(x,1,th,J)
+            p_error = compute_error(h_p,instances,labels,dist)
+            h_n = lambda x:weak(x,-1,th,J)
+            n_error = compute_error(h_n,instances,labels,dist)
+            if min(p_error,n_error)<min_error:
+                min_error = min(p_error,n_error)
+                dim,threshold = J,th
+                s=1 if min(p_error,n_error)==p_error else -1
+    
+    def De_stump(X,pn=s,threshold=threshold,dim=dim):
+        classification = 1 if pn*X[dim]<threshold else 0
+        return classification
