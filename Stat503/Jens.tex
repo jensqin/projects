@@ -1,0 +1,202 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University Assignment Title Page 
+% LaTeX Template
+% Version 1.0 (27/12/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% WikiBooks (http://en.wikibooks.org/wiki/LaTeX/Title_Creation)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+% Instructions for using this template:
+% This title page is capable of being compiled as is. This is not useful for 
+% including it in another document. To do this, you have two options: 
+%
+% 1) Copy/paste everything between \begin{document} and \end{document} 
+% starting at \begin{titlepage} and paste this into another LaTeX file where you 
+% want your title page.
+% OR
+% 2) Remove everything outside the \begin{titlepage} and \end{titlepage} and 
+% move this file to the same directory as the LaTeX file you wish to add it to. 
+% Then add \input{./title_page_1.tex} to your LaTeX file where you want your
+% title page.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\title{Title page with logo}
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+
+\begin{document}
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE University of Michigan}\\[1.5cm] % Name of your university/college
+\textsc{\Large Major Heading}\\[0.5cm] % Major heading such as course name
+\textsc{\large Minor Heading}\\[0.5cm] % Minor heading such as course title
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Title}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+Zhen \textsc{Qin} % Your name
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisor:} \\
+Dr. James \textsc{Smith} % Supervisor's Name
+\end{flushright}
+\end{minipage}\\[2cm]
+
+% If you don't want a supervisor, uncomment the two lines below and remove the section above
+%\Large \emph{Author:}\\
+%John \textsc{Smith}\\[3cm] % Your name
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+
+{\large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
+
+%----------------------------------------------------------------------------------------
+%	LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+\includegraphics[width=0.5\textwidth]{diagnostic.png}\\[1cm] % Include a department/university logo - this will require the graphicx package
+ 
+%----------------------------------------------------------------------------------------
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+
+\begin{abstract}
+Your abstract.
+\end{abstract}
+
+\section{Introduction}
+
+Your introduction goes here! Some examples of commonly used commands and features are listed below, to help you get started.
+
+If you have a question, please use the support box in the bottom right of the screen to get in touch. 
+
+\section{Data Exploration}
+This dataset features the salaries of 874 NHL (National Hockey League) players for the 2016/2017 season. The players are randomly split into a training and test populations. There are 151 predictor columns as well as a leading column with the players 2016/2017 annual salary. The league has a salary cap, meaning that each team is limited in the amount of money it can spend on players. It is worthwhile to note that the dollar figure that counts toward the salary cap isn't the actual amount of money a player makes in a season, it is the average of their yearly compensation over the length of their contract. After removing missing values, the sample sizes of trainning set and test set are 491 and 227.
+
+\subsection{Dimension Reduction}
+
+In order to avoid the effects of the curse of dimensionality, firstly dimension reduction is performed prior to applying machine learning algorithms. Thanks to the fact that Salary is numerical, some robust regression models are available for variable selection. Both feature selection and feature extraction methods are used to select numerical variables in this report. 
+
+In the data set, there are 11 categorical variables. After removing some irrelevant variables (for example, last name and first name), Hand (L or R) and Country (USA, CAN or others) are chosen to be involved in the the analysis framework. 
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c c c}
+		Variable & Description & Type \\\hline
+		Salary & The player's salary & numerical\\
+		DftYr & Year drafted & numerical\\
+		DftRd & Round in which the player was drafted & numerical\\
+		G & Goals & numerical\\
+		A1 & First assists, primary assists & numerical\\
+		A2 & Second assists, secondary assists & numerical\\
+		PTS & Points. Goals plus all assists & numerical\\
+		TOIX & Percentage of all available ice time assigned to this player & numerical\\
+		iFF & Unblocked shot attempts taken by this individual & numerical\\
+		iHDf & The difference in hits thrown by this individual minus those taken & numerical\\
+		iTKA  & Takeaways by this individual & numerical\\
+		iFOW & Faceoff wins by this individual & numerical\\
+		dzFOW & Faceoffs win in the defensive zone & numerical\\
+		CA & Shot attempts allowed while this player was on the ice & numerical\\
+		FA & Unblocked shot attempts allowed while this player was on the ice & numerical\\
+		HF & The team's hits thrown while this player was on the ice & numerical\\
+		PS & Point shares, a stats that measures contributions in points & numerical\\
+		OTOI & The amount of time this player was not on the ice & numerical\\
+		Hand & Handedness & categorical\\
+		Cntry & Country of birth & categorical\\
+	\end{tabular}
+	\caption{\label{tab:widgets}Selected Variables}
+\end{table}
+
+\subsubsection{Model Selection - Lasso}
+Lasso (least absolute shrinkage and selection operator) is a regression analysis method that performs both variable selection and regularization in order to enhance the prediction accuracy and interpretability of the statistical model it produces. This method shrinks many coefficients to exactly 0, cross validation to choose the parameter $t$. Under this condition, 66 variables have coefficients greater than 0. This result is good but not satisfactory. Aiming to keep less variables, we may adjust the parameter to increase the penalty, or use criterion methods.
+
+\subsubsection{Model Selection - BIC}
+Bayes information criterion (BIC) is a criterion for model selection among a finite set of models; the model with the lowest BIC is preferred. It is based, in part, on the likelihood function. Comparing with AIC, BIC has better performance with respect to prediction tasks. The picked model minimizes BIC, which is 13950.33. After stepwise regression, 18 variables including salary are kept in the final model. 
+
+The result is relatively good, however, model selection methods do not always benefit interpretability. In addition to regression methods, we require the variables must seem to contain most information in terms of definition. Due to each variables' description, iHDF (The difference in hits thrown by this individual minus those taken) has more information than a selected variable, iHF (Hits thrown by this individual), so iHF is replaced by iHDF . Table 1 shows the selected variables, their description and type.
+
+\subsubsection{PCA}
+
+\subsection{Comments}
+
+Comments can be added to the margins of the document using the, as shown in the example on the right. You can also add inline comments too:
+
+\subsection{Tables and Figures}
+
+Use the table and tabular commands for basic tables --- see Table~\ref{tab:widgets}, for example. You can upload a figure (JPEG, PNG or PDF) using the files menu. To include it in your document, use the includegraphics command as in the code for Figure~\ref{fig:frog} below.
+
+% Commands to include a figure:
+
+\subsection{Mathematics}
+
+\LaTeX{} is great at typesetting mathematics. Let $X_1, X_2, \ldots, X_n$ be a sequence of independent and identically distributed random variables with $\text{E}[X_i] = \mu$ and $\text{Var}[X_i] = \sigma^2 < \infty$, and let
+$$S_n = \frac{X_1 + X_2 + \cdots + X_n}{n}
+      = \frac{1}{n}\sum_{i}^{n} X_i$$
+denote their mean. Then as $n$ approaches infinity, the random variables $\sqrt{n}(S_n - \mu)$ converge in distribution to a normal $\mathcal{N}(0, \sigma^2)$.
+
+\subsection{Lists}
+
+You can make lists with automatic numbering \dots
+
+\begin{enumerate}
+\item Like this,
+\item and like this.
+\end{enumerate}
+\dots or bullet points \dots
+\begin{itemize}
+\item Like this,
+\item and like this.
+\end{itemize}
+
+We hope you find write\LaTeX\ useful, and please let us know if you have any feedback using the help menu above.
+
+\begin{thebibliography}{9}
+	\bibitem{Robotics} Fred G. Martin \emph{Robotics Explorations: A Hands-On Introduction to Engineering}. New Jersey: Prentice Hall.
+	\bibitem{Flueck}  Flueck, Alexander J. 2005. \emph{ECE 100}[online]. Chicago: Illinois Institute of Technology, Electrical and Computer Engineering Department, 2005 [cited 30
+	August 2005]. Available from World Wide Web: (http://www.ece.iit.edu/~flueck/ece100).
+\end{thebibliography}
+
+\end{document}
