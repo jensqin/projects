@@ -1,0 +1,106 @@
+                                                           The SAS System                       02:10 Thursday, December 7, 2017   1
+
+                                                         The REG Procedure
+                                                           Model: MODEL1
+                                                   Dependent Variable: threshold 
+
+                                              Number of Observations Read        2733
+                                              Number of Observations Used        2733
+
+
+                                                        Analysis of Variance
+ 
+                                                               Sum of           Mean
+                           Source                   DF        Squares         Square    F Value    Pr > F
+
+                           Model                     3         302453         100818     705.91    <.0001
+                           Error                  2729         389756      142.82009                     
+                           Corrected Total        2732         692209                                    
+
+
+                                        Root MSE             11.95074    R-Square     0.4369
+                                        Dependent Mean       11.71789    Adj R-Sq     0.4363
+                                        Coeff Var           101.98708                       
+
+
+                                                        Parameter Estimates
+ 
+                                                     Parameter       Standard
+                                Variable     DF       Estimate          Error    t Value    Pr > |t|
+
+                                Intercept     1        5.48000        0.37792      14.50      <.0001
+                                group         1       23.17633        0.71545      32.39      <.0001
+                                gender        1       -0.14799        0.53326      -0.28      0.7814
+                                inter_gg      1        1.38780        1.03789       1.34      0.1813
+                                                           The SAS System                       02:10 Thursday, December 7, 2017   2
+
+                                                         The REG Procedure
+                                                           Model: MODEL1
+                                                   Dependent Variable: threshold 
+
+                                              Number of Observations Read        2733
+                                              Number of Observations Used        2733
+
+
+                                                        Analysis of Variance
+ 
+                                                               Sum of           Mean
+                           Source                   DF        Squares         Square    F Value    Pr > F
+
+                           Model                     5         330161          66032     497.36    <.0001
+                           Error                  2727         362048      132.76426                     
+                           Corrected Total        2732         692209                                    
+
+
+                                        Root MSE             11.52234    R-Square     0.4770
+                                        Dependent Mean       11.71789    Adj R-Sq     0.4760
+                                        Coeff Var            98.33114                       
+
+
+                                                        Parameter Estimates
+ 
+                                                                      Parameter       Standard
+               Variable     Label                             DF       Estimate          Error    t Value    Pr > |t|
+
+               Intercept    Intercept                          1        3.09687        1.79242       1.73      0.0841
+               RIDAGEYR     Age at Screening Adjudicated -     1        0.15259        0.11288       1.35      0.1765
+                            Recode                              
+               gender                                          1       -0.27486        0.67439      -0.41      0.6836
+               group                                           1      -67.72894        6.77964      -9.99      <.0001
+               inter_rg                                        1        1.05344        0.14060       7.49      <.0001
+               inter_gr                                        1        0.01063        0.01600       0.66      0.5063
+                                                           The SAS System                       02:10 Thursday, December 7, 2017   3
+
+                                                         The REG Procedure
+                                                           Model: MODEL1
+                                                   Dependent Variable: threshold 
+
+                                              Number of Observations Read        2733
+                                              Number of Observations Used        2733
+
+
+                                                        Analysis of Variance
+ 
+                                                               Sum of           Mean
+                           Source                   DF        Squares         Square    F Value    Pr > F
+
+                           Model                     3         330100         110033     829.25    <.0001
+                           Error                  2729         362110      132.68948                     
+                           Corrected Total        2732         692209                                    
+
+
+                                        Root MSE             11.51909    R-Square     0.4769
+                                        Dependent Mean       11.71789    Adj R-Sq     0.4763
+                                        Coeff Var            98.30345                       
+
+
+                                                        Parameter Estimates
+ 
+                                                                      Parameter       Standard
+               Variable     Label                             DF       Estimate          Error    t Value    Pr > |t|
+
+               Intercept    Intercept                          1        2.96410        1.76332       1.68      0.0929
+               RIDAGEYR     Age at Screening Adjudicated -     1        0.15760        0.11261       1.40      0.1617
+                            Recode                              
+               group                                           1      -67.93242        6.77054     -10.03      <.0001
+               inter_rg                                        1        1.05608        0.14051       7.52      <.0001

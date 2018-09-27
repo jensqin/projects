@@ -1,0 +1,88 @@
+---
+title: "ProblemSet2_2"
+author: 'Name: Zhen Qin, Uniqname: qinzhen, UMID: 48800866, Dept: Statistics'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+####a.
+
+First, I stored the dataset interactions in `interac`, focal_names in `focaln`, all_names in `alln`.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+## Store the datasets in variables
+library(readr)
+library(dplyr)
+library(tidyr)
+library(Hmisc)
+library(ggplot2)
+setwd('E:\\UM academy\\stat 506\\ProblemSet2')
+interac=read_delim('./Stats506_F17_ps2_interactions.csv', delim=',',col_names=TRUE)
+focaln=read_delim('./Stats506_F17_ps2_focal_names.csv', delim=',',col_names=F)
+alln=read_delim('./Stats506_F17_ps2_all_names.csv', delim=',',col_names=F)
+```
+
+Then feformat the data as the data-frame `rmat` with one row per interaction type for each focal individual in the first column.
+
+```{r}
+## Reformat the data as the data-frame rmat
+separate_rows(interac,toward,sep = ',') %>%
+  mutate(newtoward=capitalize(tolower(gsub("([ ?])","",toward)))) %>%
+  select(-toward) %>%
+  rename(toward=newtoward) %>%
+  filter(toward %in% alln$X1) %>%
+  group_by(focal,behavior_cat,toward) %>%
+  mutate(n()) %>%
+  group_by(focal,behavior_cat,toward) %>%
+  filter(row_number()==1) %>%
+  spread(toward,`n()`)->rmat
+rmat[is.na(rmat)]=0
+```
+
+####b.
+
+For each interaction type, use **dist()** function to compute pair-wise canberra distances measuring the similarity between pairs of focal animals.
+
+```{r, message=FALSE, warning=FALSE}
+## Compute pair-wise canberra distances
+unique(rmat$behavior_cat)
+cdist=function(t){
+  filter(rmat, behavior_cat==t) %>%
+    dist(method = "canberra")->dmat
+  return(dmat)
+}
+ag.d=cdist("aggression")
+ap.d=cdist("approach")
+ca.d=cdist("carry")
+gr.d=cdist("groom")
+ma.d=cdist("mate")
+pl.d=cdist("play")
+sh.d=cdist("share")
+```
+
+####c.
+
+Use multidimensional scaling to find a two-dimensional embedding of the pairwise distances. Use the MDS coordinates to produce plots showing the relations among animals for each interaction type. Present these plots as a single figure faceted by interaction type.
+
+```{r}
+## Produce plots showing the relations among animals for each interaction type
+ag.mds=cmdscale(ag.d,k=2)
+ap.mds=cmdscale(ap.d,k=2)
+ca.mds=cmdscale(ca.d,k=2)
+gr.mds=cmdscale(gr.d,k=2)
+ma.mds=cmdscale(ma.d,k=2)
+pl.mds=cmdscale(pl.d,k=2)
+sh.mds=cmdscale(sh.d,k=2)
+type=c(rep("aggression",20),rep("approach",20),rep("carry",20),
+       rep("groom",20),rep("mate",20),rep("play",20),rep("share",20))
+mds=round(rbind(ag.mds,ap.mds,ca.mds,gr.mds,ma.mds,pl.mds,sh.mds),2)
+mds=as.data.frame(mds)
+mds=cbind(mds,type)
+colnames(mds)=c("coordinate1", "coordinate2","type")
+ggplot(mds,aes(coordinate1,coordinate2))+geom_point()+facet_wrap(~type)
+```

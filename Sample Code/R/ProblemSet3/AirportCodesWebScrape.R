@@ -1,0 +1,84 @@
+## Find distances between airports by scraping the page below:
+##
+## https://www.world-airport-codes.com/distance/
+##
+## Here is the search pattern to find the distance from JFK to LGA
+## https://www.world-airport-codes.com/distance/?a1=JFK&a2=LGA
+
+.libPaths('~/Rlib')
+#install.packages('rvest')
+library(rvest)
+library(data.table)
+library(tidyverse)
+library(stringr)
+library(parallel)
+
+
+# Extract the information we want from the resulting string
+get_miles = function(txt){
+  y = str_split(txt,'\\(')[[1]]
+  z = str_split(y[2],' ')[[1]][1]
+  as.numeric(z)
+}
+
+
+## Encapsulate the above in a function to find the distance 
+## between two valid airport codes.
+scrape_dist = function(a1, a2){
+  
+  url = sprintf('https://www.world-airport-codes.com/distance/?a1=%s&a2=%s',
+                a1, a2)
+  
+  srch = read_html(url)
+  txt =
+    srch %>%
+    html_node("strong") %>% # identified by viewing the source in a browser
+    html_text() 
+  get_miles(txt)
+}
+
+
+## Now we can loop over all airports in the NYCflights14 data.
+nyc14 = fread('https://github.com/arunsrinivasan/flights/wiki/NYCflights14/flights14.csv')
+
+# unique codes
+origin_codes = unique(nyc14$origin)
+dest_codes = unique(nyc14$dest)
+
+# call scrape_dist for a single fixed code vs a set of targets
+get_dists = function(fixed, targets){
+  dists = sapply(targets, function(target) scrape_dist(fixed, target))
+  tibble(from=fixed, to=targets, dist=dists)
+}
+
+
+# Exexute outer loop in parallel.
+inner_loop =  function(i){
+  get_dists(origin_codes[i], origin_codes[{i+1}:length(origin_codes)])
+}
+
+## May not work on servers with limited ports.
+#df_dist = mclapply(107:{length(dest_codes)-1}, inner_loop) 
+
+origin_dist = list()
+for(i in 1:{length(origin_codes)-1}){
+  origin_dist[[i]] = inner_loop(i)
+}
+
+# bind results of inner loop into a single data frame
+origin_dist = do.call(bind_rows, origin_dist)
+
+outer_loop = function(i){
+  get_dists(origin_codes[i], dest_codes)
+}
+
+dest_dist = list()
+for(i in 1:length(origin_codes)){
+  dest_dist[[i]] = outer_loop(i)
+}
+
+dest_dist = do.call(bind_rows, dest_dist)
+
+fromo_dist = rbind(origin_dist, dest_dist)
+
+save(fromo_dist, file='./AirportCodeDistsFromOrigin.RData')

@@ -1,0 +1,236 @@
+                                                           The SAS System                       02:20 Thursday, December 7, 2017   1
+
+                                                        The Mixed Procedure
+
+                                                         Model Information
+
+                                       Data Set                     WORK.MMODEL1             
+                                       Dependent Variable           threshold                
+                                       Covariance Structure         Variance Components      
+                                       Estimation Method            REML                     
+                                       Residual Variance Method     Profile                  
+                                       Fixed Effects SE Method      Model-Based              
+                                       Degrees of Freedom Method    Containment              
+
+
+                                                      Class Level Information
+ 
+                                         Class    Levels    Values
+
+                                         ear           2    0 1                           
+                                         freq          7    0.5 1 2 3 4 6 8               
+
+
+                                                            Dimensions
+
+                                                Covariance Parameters             3
+                                                Columns in X                      4
+                                                Columns in Z                      9
+                                                Subjects                          1
+                                                Max Obs per Subject           38170
+
+
+                                                      Number of Observations
+
+                                            Number of Observations Read           38170
+                                            Number of Observations Used           38170
+                                            Number of Observations Not Used           0
+
+
+                                                         Iteration History
+ 
+                                    Iteration    Evaluations    -2 Res Log Like       Criterion
+
+                                            0              1    318253.98229512                
+                                            1              2    314111.66790187      0.00000000
+
+
+                                                     Convergence criteria met.                    
+
+
+                                                       Covariance Parameter
+                                                             Estimates
+ 
+                                                       Cov Parm     Estimate
+
+                                                       ear           0.04854
+                                                       freq          29.6429
+                                                       Residual       219.26
+                                                           The SAS System                       02:20 Thursday, December 7, 2017   2
+
+                                                        The Mixed Procedure
+
+                                                          Fit Statistics
+
+                                               -2 Res Log Likelihood        314111.7
+                                               AIC (Smaller is Better)      314117.7
+                                               AICC (Smaller is Better)     314117.7
+                                               BIC (Smaller is Better)      314113.7
+
+
+                                                   Type 3 Tests of Fixed Effects
+ 
+                                                         Num     Den
+                                           Effect         DF      DF    F Value    Pr > F
+
+                                           group           1    38E3    33309.2    <.0001
+                                           gender          1    38E3      22.90    <.0001
+                                           inter_gg        1    38E3     445.56    <.0001
+                                                           The SAS System                       02:20 Thursday, December 7, 2017   3
+
+                                                        The Mixed Procedure
+
+                                                         Model Information
+
+                                       Data Set                     WORK.MMODEL2             
+                                       Dependent Variable           threshold                
+                                       Covariance Structure         Variance Components      
+                                       Estimation Method            REML                     
+                                       Residual Variance Method     Profile                  
+                                       Fixed Effects SE Method      Model-Based              
+                                       Degrees of Freedom Method    Containment              
+
+
+                                                      Class Level Information
+ 
+                                         Class    Levels    Values
+
+                                         ear           2    0 1                           
+                                         freq          7    0.5 1 2 3 4 6 8               
+
+
+                                                            Dimensions
+
+                                                Covariance Parameters             3
+                                                Columns in X                      6
+                                                Columns in Z                      9
+                                                Subjects                          1
+                                                Max Obs per Subject           38170
+
+
+                                                      Number of Observations
+
+                                            Number of Observations Read           38170
+                                            Number of Observations Used           38170
+                                            Number of Observations Not Used           0
+
+
+                                                         Iteration History
+ 
+                                    Iteration    Evaluations    -2 Res Log Like       Criterion
+
+                                            0              1    316708.59863988                
+                                            1              2    312370.07058433      0.00000000
+
+
+                                                     Convergence criteria met.                    
+
+
+                                                       Covariance Parameter
+                                                             Estimates
+ 
+                                                       Cov Parm     Estimate
+
+                                                       ear           0.04822
+                                                       freq          29.7167
+                                                       Residual       209.38
+                                                           The SAS System                       02:20 Thursday, December 7, 2017   4
+
+                                                        The Mixed Procedure
+
+                                                          Fit Statistics
+
+                                               -2 Res Log Likelihood        312370.1
+                                               AIC (Smaller is Better)      312376.1
+                                               AICC (Smaller is Better)     312376.1
+                                               BIC (Smaller is Better)      312372.2
+
+
+                                                   Type 3 Tests of Fixed Effects
+ 
+                                                         Num     Den
+                                           Effect         DF      DF    F Value    Pr > F
+
+                                           RIDAGEYR        1    38E3      23.79    <.0001
+                                           gender          1    38E3      21.93    <.0001
+                                           group           1    38E3     506.14    <.0001
+                                           inter_rg        1    38E3     520.36    <.0001
+                                           inter_gr        1    38E3     532.75    <.0001
+                                                           The SAS System                       02:20 Thursday, December 7, 2017   5
+
+                                                        The Mixed Procedure
+
+                                                         Model Information
+
+                                       Data Set                     WORK.MMODEL3             
+                                       Dependent Variable           threshold                
+                                       Covariance Structure         Variance Components      
+                                       Estimation Method            REML                     
+                                       Residual Variance Method     Profile                  
+                                       Fixed Effects SE Method      Model-Based              
+                                       Degrees of Freedom Method    Containment              
+
+
+                                                      Class Level Information
+ 
+                                         Class    Levels    Values
+
+                                         ear           2    0 1                           
+                                         freq          7    0.5 1 2 3 4 6 8               
+
+
+                                                            Dimensions
+
+                                                Covariance Parameters             3
+                                                Columns in X                      4
+                                                Columns in Z                      9
+                                                Subjects                          1
+                                                Max Obs per Subject           38170
+
+
+                                                      Number of Observations
+
+                                            Number of Observations Read           38170
+                                            Number of Observations Used           38170
+                                            Number of Observations Not Used           0
+
+
+                                                         Iteration History
+ 
+                                    Iteration    Evaluations    -2 Res Log Like       Criterion
+
+                                            0              1    317496.44437485                
+                                            1              2    313261.51124398      0.00000000
+
+
+                                                     Convergence criteria met.                    
+
+
+                                                       Covariance Parameter
+                                                             Estimates
+ 
+                                                       Cov Parm     Estimate
+
+                                                       ear           0.04728
+                                                       freq          29.6641
+                                                       Residual       214.38
+                                                           The SAS System                       02:20 Thursday, December 7, 2017   6
+
+                                                        The Mixed Procedure
+
+                                                          Fit Statistics
+
+                                               -2 Res Log Likelihood        313261.5
+                                               AIC (Smaller is Better)      313267.5
+                                               AICC (Smaller is Better)     313267.5
+                                               BIC (Smaller is Better)      313263.6
+
+
+                                                   Type 3 Tests of Fixed Effects
+ 
+                                                         Num     Den
+                                           Effect         DF      DF    F Value    Pr > F
+
+                                           RIDAGEYR        1    38E3       9.94    0.0016
+                                           group           1    38E3     440.45    <.0001
+                                           inter_rg        1    38E3     478.16    <.0001

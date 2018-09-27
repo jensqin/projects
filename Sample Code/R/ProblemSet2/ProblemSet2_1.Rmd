@@ -1,0 +1,126 @@
+---
+title: "ProblemSet2_1"
+author: 'Name: Zhen Qin, Uniqname: qinzhen, UMID: 48800866, Dept: Statistics'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+####a.
+
+First, I stored the data in `recs`.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+## Store data in recs
+library('readr')
+library('dplyr')
+library('tidyr')
+setwd('E:\\UM academy\\stat 506\\ProblemSet2')
+recs=read_delim('./recs2009_public.csv', delim=',',col_names=TRUE)
+```
+
+Set variables. `Sweight` is sum of nweight grouped by `State` and `Roof`, `SSweight` is sum of nweight grouped by `State`. Generate the Rate matrix.
+
+```{r}
+## Calculate matrix including rate as Ratemat
+select(recs, State=REPORTABLE_DOMAIN, Roof=ROOFTYPE, Weight = NWEIGHT) %>%
+  group_by(State, Roof) %>%
+  summarise(Sweight=sum(Weight)) %>%
+  group_by(State) %>%
+  mutate(SSweight=sum(Sweight),Rate=Sweight/SSweight) %>%
+  select(Roof, State, Rate) %>%
+  filter(Roof==2)->Ratemat
+Ratemat=Ratemat[,-1]
+```
+
+Then showed `Ratemat` and calculate max value and min value of `Rate`.
+
+```{r}
+## Calculate max and min value
+Statestr="Connecticut, Maine, New Hampshire, Rhode Island, Vermont
+Massachusetts
+New York
+New Jersey
+Pennsylvania
+Illinois
+Indiana, Ohio
+Michigan
+Wisconsin
+Iowa, Minnesota, North Dakota, South Dakota
+Kansas, Nebraska
+Missouri
+Virginia
+Delaware, District of Columbia, Maryland, West Virginia
+Georgia
+North Carolina, South Carolina
+Florida
+Alabama, Kentucky, Mississippi
+Tennessee
+Arkansas, Louisiana, Oklahoma
+Texas
+Colorado
+Idaho, Montana, Utah, Wyoming
+Arizona
+Nevada, New Mexico
+California
+Alaska, Hawaii, Oregon, Washington"
+Statename=unlist(strsplit(Statestr,split = "\n"))
+tmpmat=Ratemat
+tmpmat$State=Statename
+knitr::kable(tmpmat)
+maxp=which.max(Ratemat$Rate)
+minp=which.min(Ratemat$Rate)
+plot(Ratemat$State,Ratemat$Rate,ylim = c(0,0.13))
+axis(at=1:30,side = 1)
+text(Ratemat$State[c(maxp,minp)],Ratemat$Rate[c(maxp,minp)],
+     paste("(",Statename[c(maxp,minp)],",",round(Ratemat$Rate[c(maxp,minp)],4),")")
+     ,pos=1,cex=0.7)
+```
+
+The max value is .1246495 and `State` is 16, the min value is .0144062 and `State` is 19. The answer 1 is North Carolina, South Carolina, the answer 2 is Tennessee.
+
+####b.
+
+Compute the proportion of each roof type for all houses constructed in each decade.
+
+```{r}
+## Compute the proportion
+Roofstr="Not Applicable,Ceramic or Clay Tiles,Wood Shingles/Shakes,Metal,\
+Slate or Synthetic Slate,Composition Shingles,Asphalt,Concrete Tiles,Other"
+Roofname=unlist(strsplit(Roofstr,split = ","))
+tmpstr=rep(Roofname[1],7)
+for(i in 2:9){
+  tmpstr=c(tmpstr,rep(Roofname[i],7))
+}
+Drecs=recs
+Drecs$YEARMADERANGE[Drecs$YEARMADERANGE==8] = 7
+select(Drecs, Roof=ROOFTYPE, Decade = YEARMADERANGE, Weight = NWEIGHT) %>%
+  group_by(Roof, Decade) %>%
+  summarise(Sweight=sum(Weight))->Smat
+group_by(Smat,Decade) %>%
+  mutate(SSweight=sum(Sweight),Rate=Sweight/SSweight) %>%
+  select(Decade, Roof, Rate)->tmpmat
+tmpmat$Decade=rep(c("before 1950","1950s",
+                    "1960s","1970s","1980s","1990s","2000s"),9)
+tmpmat$Roof=tmpstr
+knitr::kable(tmpmat)
+```
+
+Calculate the max rate and generate a plot, and then use the string "Ceramic or Clay Tiles,Wood Shingles/Shakes,Metal,Slate or Synthetic Slate,Composition Shingles,Asphalt,Concrete Tiles,Other,Not Applicable" to get the names.
+
+```{r, message=FALSE, warning=FALSE}
+## Calculate the max rate and generate a plot
+spread(Smat, Decade,Sweight) %>%
+  transmute(Rate=(`2`+`3`+`4`+`5`+`6`)/`1`)->Ratemat
+Roofname[which.max(Ratemat$Rate)]
+plot(Ratemat$Roof,Ratemat$Rate,ylim = c(0,13),xlim = c(0,9))
+axis(at=-2:8,side = 1)
+text(Ratemat$Roof,Ratemat$Rate,paste("(",Roofname,",",round(Ratemat$Rate,4),")")
+     ,pos=1,cex=0.7)
+```
+
+Use this subset by decades to calculate, Concrete Tiles roof saw the largest relative rise. 

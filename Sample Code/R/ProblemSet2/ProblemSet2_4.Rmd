@@ -1,0 +1,113 @@
+---
+title: "ProblemSet2_4"
+author: 'Name: Zhen Qin, Uniqname: qinzhen, UMID: 48800866, Dept: Statistics'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Generate functions to get `m` Monte Carlo samples. The original sample size is `n` and distribution is `dis`. Use bootstrap to estimate coverage probability and width of confidence interval, and then use robust estimator to estimate coverage probability and width of confidence interval.
+
+```{r}
+## Generate functions to get m Monte Carlo samples
+mcsamp=function(n,dis,m){
+  if(dis=='t'){
+    samp=rt(m*n,df=10)
+    z=qt(1-{1-.95}/2,df=10)
+    qm=qt(0.5,df=10)
+  }
+  else if(dis=='normal'){
+    samp=rnorm(m*n)
+    z=qnorm(1-{1-.95}/2)
+    qm=qnorm(0.5)
+  }
+  else if(dis=='uniform'){
+    samp=runif(m*n)
+    z=qunif(1-{1-.95}/2)
+    qm=qunif(0.5)
+  }
+  else if(dis=='exponential'){
+    samp=rexp(m*n)
+    z=qexp(.95)
+    qm=qexp(0.5)
+  }
+  else
+    return('Use another distribution')
+  return(list(bsample=samp,bquantile=z,bmedian=qm,bnumber=n,mcnumber=m))
+}
+## Use bootstrap to estimate coverage probability and width of confidence interval
+bootstrap_est=function(samp,z,qm,n,m){
+  dim(samp)=c(m,n)
+  interval=c()
+  for(i in 1:m){
+    bsamp=sample(samp[i,],1000*n,replace = TRUE)
+    dim(bsamp)=c(1000,n)
+    me=apply(bsamp,2,median)
+    interval = rbind(interval,quantile(me,c(0.025,0.975)))
+  }
+  width=mean(interval[,2]-interval[,1])
+  coverage = sum(qm>=interval[,1]&qm<=interval[,2])/m
+  return(c(coverage,width))
+}
+## Use robust estimator to estimate coverage probability and width of confidence interval
+robust_est=function(samp,z,qm,n,m){
+  dim(samp)=c(m,n)
+  me=apply(samp,1,median)
+  ma=apply(samp,1,mad)
+  se=z*1.49*ma/sqrt(n)
+  width =2*mean(se)
+  coverage = sum(qm>=me-se&qm<=me+se)/m
+  return(c(coverage,width))
+}
+```
+
+For sample size = 500, 750, 1000, calculate coverage probability and width of confidence interval.
+
+```{r, eval=FALSE}
+## For sample sizes, calculate coverage probability and width of confidence interval
+for(i in c(500,750,1000)){
+  for(j in c('normal','t','uniform','exponential')){
+    cat("sample:",i,"distribution:",j,"\n")
+    sampdata=mcsamp(i,j,1000)
+    re.boot=bootstrap_est(sampdata$bsample,sampdata$bquantile,sampdata$bmedian,\
+                          sampdata$bnumber,sampdata$mcnumber)
+    cat("method: bootstrap, coverage probability:",re.boot[1],", width:",re.boot[2],"\n")
+    re.robust=robust_est(sampdata$bsample,sampdata$bquantile,sampdata$bmedian,\
+                         sampdata$bnumber,sampdata$mcnumber)
+    cat("method: robust, coverage probability:",re.robust[1],", width:",re.robust[2],"\n")
+    cat("\n")
+  }
+}
+```
+
+Hide the result and reformat it to the tables below.
+
+**Coverage Probability Table(bootstrap/robust)**
+
+| Distribution&Size| 500           | 750           | 1000          |
+| ---------------- |:-------------:|:-------------:|:-------------:|
+| N(0, 1)          | 0.819 / 0.981 | 0.91  / 0.981 | 0.945 / 0.978 |
+| t(10)            | 0.829 / 0.992 | 0.913 / 0.992 | 0.955 / 0.99  |
+| U(0, 1)          | 0.819 / 0.706 | 0.888 / 0.706 | 0.957 / 0.733 |
+| exp(1)           | 0.842 / 0.997 | 0.924 / 0.999 | 0.951 / 0.998 |
+
+**Width Table(bootstrap/robust)**
+
+| Distribution&Size| 500                     | 750                     | 1000                    |
+| ---------------- |:-----------------------:|:-----------------------:|:-----------------------:|
+| N(0, 1)          | 0.1527747 / 0.2607659   | 0.1544315 / 0.2132925   | 0.1549248 / 0.1841783   |
+| t(10)            | 0.1564531 / 0.3078745   | 0.1582663 / 0.250752    | 0.1580319 / 0.2175079   |
+| U(0, 1)          | 0.06089743 / 0.04797614 | 0.06120196 / 0.03923175 | 0.06152766 / 0.03400253 |
+| exp(1)           | 0.1231505 / 0.2839198   | 0.1238471 / 0.2317532   | 0.12322 / 0.2011469     |
+
+We can get some rules from tables:
+
+* By both methods I can get satisfactory results that are big coverage probability and small width of CI. 
+* Bigger coverage probability means bigger width of CI for the same sample size and distribution.
+* Increase of samples results in increase of coverage probability by bootstrap but nothing by robust.
+* Increase of samples results in decrease of width of CIs by robust but nothing by bootstrap.
+* Data varies a lot for different distributions. Uniform distribution has smaller width by both methods and smaller coverage probability by robust.

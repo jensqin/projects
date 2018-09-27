@@ -1,0 +1,109 @@
+---
+title: "ProblemSet3_1"
+author: 'Name: Zhen Qin, Uniqname: qinzhen, UMID: 48800866, Dept: Statistics'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The data is from https://github.com/jensqin/Stat506.
+
+#### a.
+
+```{r, message=FALSE, warning=FALSE}
+library('readr')
+library(data.table)
+setwd('E:\\UM academy\\stat 506\\ProblemSet3')
+
+# load the data
+recs=read_delim('./recs2009_public.csv', delim=',',col_names=TRUE)
+recs=data.table(recs)[ROOFTYPE>0,]
+
+# Store names of states
+Statename= c("CT, ME, NH, RI, VT", "MA", "NY", "NJ", "PA", "IL",
+             "IN, OH", "MI", "WI", "IA, MN, ND, SD", "KS, NE", "MO",
+             "VA", "DE, DC, MD, WV", "GA", "NC, SC", "FL", "AL, KY, 
+             MS","TN", "AR, LA, OK", "TX", "CO", "ID, MT, UT, WY",
+             "AZ","NV, NM", "CA", "AK, HI, OR, WA" )
+
+# Compute Rate matrix
+recs$ROOFTYPE = as.factor(recs$ROOFTYPE)
+levels(recs$ROOFTYPE) = c("Ceramic or Clay", "Wood Shingles", "Metal", "Slate", "Composition", 
+                          "Asphalt", "Concrete", "Other")
+
+Ratemat = recs[,.(State=REPORTABLE_DOMAIN,Roof=ROOFTYPE,Weight = NWEIGHT)
+               ][, `:=`(Sweight={as.integer(Roof == "Wood Shingles")*Weight})
+                 ][,.(Sweight = sum(Sweight), SSweight = sum(Weight)), by = State
+                   ][, .(State, Rate = Sweight/SSweight)
+                     ][order(State)]
+Ratemat$State=Statename
+Ratemat=Ratemat[order(Rate)]
+
+# Show the table
+knitr::kable(Ratemat, col.names = c('State(s)','Rate'))
+```
+
+1.
+
+For each state(s) and each rooftype, compute sum of weight as Sweight.
+
+2.
+
+For each state, compute the sum of Sweight as SSweight, and compute the rate Sweight/SSweight.
+
+3.
+
+Draw state(s) and Statename, and sort the data by rate.
+
+4.
+
+Find which state(s) has the biggest rate, which has the smallest rate.
+
+Answer: The answer 1 is North Carolina, South Carolina, the answer 2 is Tennessee.
+
+
+#### b.
+
+```{r}
+# Compute the proportion of each roof type for all houses constructed in each decade
+recs$YEARMADERANGE[recs$YEARMADERANGE==8]=7
+recs$Decade = as.factor(recs$YEARMADERANGE)
+levels(recs$Decade) = c("before1950", "1950s", "1960s", "1970s", "1980s", "1990s", "2000s")
+sweight = recs[,.(Decade, ROOFTYPE, NWEIGHT)
+                    ][, .(Sweight = sum(NWEIGHT)), by = Decade]
+rate = recs[,.(Decade, ROOFTYPE, NWEIGHT)
+                         ][, .(Weight = sum(NWEIGHT)), by = .(Decade, ROOFTYPE)]
+
+# Set keys for computing
+setkey(sweight, Decade)
+setkey(rate, Decade)
+rate = rate[sweight][, .(Prop = Weight/Sweight, Decade, ROOFTYPE)]
+tmpmat = dcast(rate, ROOFTYPE ~Decade, value.var = "Prop")
+tmpmat = tmpmat[,`:=`(rise=(`2000s`+`1990s`+`1980s`+`1970s`+`1960s`)/`before1950`)
+          ][,.(Roof=ROOFTYPE, rise)]
+
+# Show the table
+knitr::kable(tmpmat)
+```
+
+1.
+
+Combine the rows when yearmaderange is 7 or 8 as datasets in 2000s. Store a new attribute Decade.
+
+2.
+
+For each rooftype and decade, compute the sum of weight as sweight.
+
+3.
+
+For each decade, compute the sum of sweight, then compute the rate.
+
+4.
+
+Reshape the data into wide format, the formula is ROOFTYPE~Decade, value.var = "Prop", then compute relative rise in use between 1950 and 2000, draw the biggest rise.
+
+Answer: Use this subset by decades to calculate, Concrete Tiles roof saw the largest relative rise.

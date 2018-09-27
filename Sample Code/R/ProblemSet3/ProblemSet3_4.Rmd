@@ -1,0 +1,102 @@
+---
+title: "ProblemSet3_4"
+author: 'Name: Zhen Qin, Uniqname: qinzhen, UMID: 48800866, Dept: Statistics'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The data is from https://github.com/jensqin/Stat506.
+
+####a.
+
+```{r}
+# load the data
+setwd("E:/UM academy/stat 506/ProblemSet3")
+library(ggplot2)
+library(data.table)
+library(tibble)
+fl = fread('flights14.csv')
+load("ProblemSet3_3.RData")
+```
+
+```{r}
+# Determine the number of flights per week
+weekfl_od=fl[,.N,by=.(origin, dest)
+          ][,`:=`(weekn=N/(304/7.0))]
+
+# show 10 rows
+knitr::kable(head(weekfl_od, 10L), digits=3)
+```
+
+####b.
+
+```{r,fig.width=10,fig.height=8}
+# Display the data from part ¡°a¡± as network graph
+maxn=max(weekfl_od$weekn)
+arrowplot=ggplot(data = as.tibble(mds), aes(x=V1, y=V2))+ 
+  geom_text(aes(label=rownames(mds)),hjust=0,vjust=0)
+p0=mds[weekfl_od$origin,]
+p1=mds[weekfl_od$dest,]
+color=c()
+color[rownames(p0)=="JFK"]="red"
+color[rownames(p0)=="LGA"]="green"
+color[rownames(p0)=="EWR"]="blue"
+colnames(p1)=c("V3","V4")
+plotdf=as.data.frame(cbind(p0,p1))
+arrowplot+geom_segment(data=plotdf,aes(x=V1,y=V2,xend=V3,yend=V4),arrow = 
+                         arrow(length = unit(0.1, "cm")),size=weekfl_od$weekn*3.0/maxn,color=color)+
+  ggtitle("Plot with Arrows")
+```
+
+Red arrows are from JFK, green arrows are from LGA, blue arrows are from EWR.
+
+####c.
+
+```{r}
+# Repeat part ¡°a¡± separately for each carrier
+weekfl_cod=fl[,.(weekn=.N/(304/7.0)),by=.(carrier,origin,dest)]
+weekfl_cod_i=list()
+for(i in 1:length(unique(weekfl_cod$carrier))){
+  weekfl_cod_i[[i]]=weekfl_cod[weekfl_cod$carrier==unique(weekfl_cod$carrier)[i],.(origin,dest,weekn)]
+}
+
+# show 10 rows of datasets for AA
+knitr::kable(head(weekfl_cod_i[[1]], 10L), digits=3)
+```
+
+```{r, warning=FALSE,fig.height=7}
+# Use MDS to create a 2-dimensional map of the carriers
+weekfl_cast=dcast(weekfl_cod,carrier~origin+dest,value.var = "weekn",fill=0)
+mdsplot=function(dfc){
+  dist_dfc=dist(dfc, method = "canberra")
+  mdsc <- cmdscale(dist_dfc, k=2)
+  plot(mdsc[,1], mdsc[,2], xlab="Coordinate 1", ylab="Coordinate 2", 
+       main="Metric	MDS",type="n")
+  text(mdsc[,1], mdsc[,2], labels = dfc$carrier, cex=.7)
+}
+mdsplot(weekfl_cast)
+```
+
+* If two points are close to each other, then the carriers have similar flights timetable and number, otherwise their flights timetable or number are totally different.
+* Some points are close to each other, points of different groups are far away, thus these points can be cluster easily.
+
+
+####d.
+
+```{r, warning=FALSE,fig.height=7}
+# Compute the average weekly number of flights for each carrier
+weekfl_c=fl[,.(weekn=.N/(304/7.0)),by=carrier]
+
+# Repeat the visualization from part ¡°c¡± after normalizing the frequency data
+norm_weekfl_c=weekfl_cod[,`:=`(sn=sum(weekn)),by=carrier
+            ][,.(carrier,origin,dest,freq=weekn/sn)]
+norm_weekfl_cast=dcast(norm_weekfl_c,carrier~origin+dest,value.var = "freq",fill=0)
+mdsplot(norm_weekfl_cast)
+```
+
+* If two points are close to each other, then the carriers have similar flights schedule of airports, otherwise their flights schedule are totally different. Difference of number of flights do not influence the points.
+* Some points are close to each other, points of different groups are far away, thus these points can be cluster easily.
+* Basically, the plot is similar with plot in part c. So carriers in the same group have similar number of flights and type of airports. 

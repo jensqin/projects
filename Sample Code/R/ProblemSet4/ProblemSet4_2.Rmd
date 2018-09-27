@@ -1,0 +1,76 @@
+---
+title: "ProblemSet4_2"
+author: 'Name: Zhen Qin, Uniqname: qinzhen, UMID: 48800866, Dept: Statistics'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Datasets are from https://github.com/jensqin/Stat506 .
+
+## c.
+
+```{r, message=FALSE, warning=FALSE}
+setwd("E:/UM academy/stat 506/ProblemSet4")
+library(sas7bdat)
+library(lme4)
+
+# load the data
+rdclong = read.sas7bdat('rdclong.sas7bdat')
+
+# Filter your data to contain only the 1000 Hz test for the right ear
+test1kr = rdclong[rdclong$ear==1&rdclong$freq==1&rdclong$threshold<200,]
+test = rdclong[rdclong$threshold<200,]
+```
+
+```{r}
+# fit the model with interaction
+fit_interaction=lm(threshold ~group*RIAGENDR, data=test1kr)
+summary(fit_interaction)
+```
+
+The interaction is not significant because the p-value is 0.181>0.05.
+
+```{r}
+# fit the model to test age
+fit_age=lm(threshold~RIDAGEYR+group+RIAGENDR+RIDAGEYR:group+RIDAGEYR:RIAGENDR,data=test1kr)
+summary(fit_age)
+```
+
+After controlling for age group and gender, age is not important as a continuous variable because the p-value is 0.217>0.05.
+
+```{r}
+# fit the model to test group 
+fit_group=lm(threshold~RIDAGEYR+group+RIDAGEYR:group,data=test1kr)
+summary(fit_group)
+```
+
+The effect of age, as a continuous variable, is significantly different among the older and/or younger age groups because the p-value is less than 0.05.
+
+## d.
+
+```{r}
+# fit the mixed model with interaction
+mx_interaction=lmer(threshold ~group*RIAGENDR+(ear|freq),data = test)
+summary(mx_interaction)
+```
+
+In fixed effects, the absolute value of t value of the interaction is greater than 2, so it is significant.
+
+```{r}
+# fit the mixed model to test age
+mx_age=lmer(threshold~RIDAGEYR+group+RIAGENDR+RIDAGEYR:group+RIDAGEYR:RIAGENDR+(ear|freq),data=test)
+summary(mx_age)
+```
+
+In fixed effects, the absolute value of t value of RIAGENDR is greater than 2, so it is significant.
+
+```{r}
+# fit the mixed model to test group
+mx_group=lmer(threshold~RIDAGEYR+group+RIDAGEYR:group+(ear|freq),data=test)
+summary(mx_group)
+```
+
+In fixed effects, the t-value is greater than 2 so the effect of age, as a continuous variable, is significantly different among the older and/or younger age groups.

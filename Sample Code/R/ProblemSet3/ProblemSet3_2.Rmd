@@ -1,0 +1,80 @@
+---
+title: "ProblemSet3_2"
+author: 'Name: Zhen Qin, Uniqname: qinzhen, UMID: 48800866, Dept: Statistics'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The data is from https://github.com/jensqin/Stat506.
+
+####a.
+
+First, load the data.
+
+```{r}
+library(data.table)
+library(ggplot2)
+fl = fread('flights14.csv')
+```
+
+Then calculate the average and plot.
+
+```{r,fig.height=8,fig.width=10}
+# Compute the average departure delay per flight for all carriers by month and spaghetti plot
+avg_depdelay = fl[,.(avg=mean(dep_delay)),by=.(month,carrier)]
+interaction.plot(avg_depdelay$month,avg_depdelay$carrier,avg_depdelay$avg,
+                 xlab = "month",ylab = "average departure delay")
+```
+
+####b.
+
+```{r}
+# Compute the 90th percentile of arrival delays and heat map
+p90_arrdelay = fl[,.(arr_delay,carrier,origin,dest)
+       ][,.(del90=quantile(arr_delay,0.9)),by=.(carrier,origin,dest)
+       ]
+knitr::kable(head(p90_arrdelay))
+```
+
+A part of 90th percentile is shown above.
+
+```{r, fig.height=10,fig.width=10}
+# produce a heat map 
+for(i in unique(p90_arrdelay$origin)){
+  tmp=p90_arrdelay[origin==i,.(del90,carrier,dest)]
+  hmap=ggplot(data=tmp,aes(x=carrier,y=dest))+geom_tile(aes(fill=del90))+ggtitle(i)
+  print(hmap)
+}
+```
+
+####c.
+
+```{r}
+# compute the average departure delay for each of the following time windows
+fl_win=fl[,]
+fl_win[fl_win$hour==24,c("hour")]=0
+
+delay_win = fl[, .(time_window = 1 + as.integer(hour%%24 >= 12) + 
+                     as.integer(hour%%24 >= 18), dep_delay, origin)
+           ][, .(mean_delay = mean(dep_delay)), by = .(time_window,origin)]
+delay_win$time_window = as.factor(delay_win$time_window)
+levels(delay_win$time_window) = c("0:00 - 11:59", "12:00 - 17:59", "18:00 - 23:59.")
+knitr::kable(delay_win[order(origin,time_window)])
+```
+
+####d.
+
+```{r}
+# center and scale the air time by the mean
+alpha = qnorm(1-{1-.95}/2)
+ci95 = fl[, .(air_time = {air_time - mean(air_time)}/mean(air_time),dep_delay = 
+                1 + as.integer(dep_delay > 0) + as.integer(dep_delay >= 15))
+  ][, .(lcb = mean(air_time) - alpha*sd(air_time),ucb = mean(air_time) + alpha*sd(air_time)), by=dep_delay
+  ][order(dep_delay)]
+ci95$dep_delay = as.factor(ci95$dep_delay)
+levels(ci95$dep_delay) = c("early or on time", "less than 15 min delay","more than 15 min delay")
+knitr::kable(ci95)
+```

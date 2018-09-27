@@ -1,0 +1,81 @@
+---
+title: "ProblemSet2_3"
+author: 'Name: Zhen Qin, Uniqname: qinzhen, UMID: 48800866, Dept: Statistics'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+####a.
+
+Write a function to generate n iid samples from the square $\{(x_1,x_2):|x_1|\le 1,|x_2|\le1\}$.
+
+```{r}
+## Generate n iid samples from the square
+genmc=function(x){
+  x1=runif(x,-1,1)
+  x2=runif(x,-1,1)
+  return(as.data.frame(cbind(x1,x2)))
+}
+```
+
+####b.
+
+Let $X$ be a Bernoulli random variable. $X=1$ when the point is in the unit circle, otherwise $X=0$, so $X\sim Ber(\frac{\pi}{4}), EX=\frac{\pi}{4},VarX=\frac{\pi}{4}(1-\frac{\pi}{4})$. Denote $Y=4X$. $EY=4EX=\pi, VarY=16(EX^2-(EX)^2)=\pi(4-\pi)$. According to the theory, $\sqrt{n}(\bar\theta_n-\theta)\to_d N(0,\sigma^2)$. I estimated $\pi$ because $\overline\theta_n \to \theta, \theta=EY=\pi,\overline\theta_n=\sum_nY_i/n=4\sum_nX_i/n=4\overline{x}$. Then I estimate the constant $\pi$.
+
+```{r}
+## Estimate the constant Pi
+mcdf=genmc(100000)
+mn =sum(mcdf$x1^2+mcdf$x2^2<=1)*1.0/100000
+cat("The estimator of pi is",mn*4,".\n")
+```
+
+####c.
+
+According to theory, the confidence interval is $\overline\theta_n-\frac{1}{\sqrt n}\hat\sigma qnorm\le\theta \le\overline\theta_n+\frac{1}{\sqrt n}\hat\sigma qnorm, \hat\sigma^2=16(\overline{x}-\overline{x}^2)$. The interval cover the true value.
+
+```{r}
+## Compute a 95% confidence interval
+m = qnorm(1-{1-.95}/2)
+se = sqrt(mn*(1-mn)/100000)
+lcb = mn - m*se
+ucb = mn + m*se
+cat("The confidence interval is (",4*lcb,",",4*ucb,").\n")
+```
+
+####d.
+
+To estimate two significant digits accurately with 99% confidence, make sure that $0.05\ge qnorm\times\frac{\hat{\sigma}}{\sqrt{n}}$ at level 0.99. So $\sqrt{n}\ge  qnorm\times\frac{\hat{\sigma}}{0.05}$. Since $\hat{\sigma}=4\sqrt{E(X)(1-E(X))}\le 2$, we need $n\ge 10616$. Then the 99% CI is accurate to two significant digits.
+
+```{r}
+## Estimate two significant digits accurately with 99% confidence
+m1 = qnorm(1-{1-.99}/2)
+n1 = ceiling((4*m1*0.5/0.05)^2)
+cat("The sample size is",n1,".\n")
+mcdf1 = genmc(n1)
+mn1 =sum(mcdf1$x1^2+mcdf1$x2^2<=1)*1.0/n1
+se1 = sqrt(mn1*(1-mn1)/n1)
+lcb1 = mn1 - m1*se1
+ucb1 = mn1 + m1*se1
+cat("The estimator of pi is",mn1*4,".\n")
+cat("The confidence interval is (",4*lcb1,",",4*ucb1,").\n")
+```
+
+####e.
+
+Monte Carlo estimate to get an estimator of the same constant is the same. No need to modify the variance because $X$ is the same.
+
+```{r}
+## Repeat this exercise using the smaller square
+mcdf2=abs(mcdf)
+mn2=sum(mcdf2$x1^2+mcdf2$x2^2<=1)*1.0/100000
+cat("The estimator of pi is",mn2*4,".\n")
+se2= sqrt(mn2*(1-mn2)/100000)
+lcb2 = mn2 - m*se2
+ucb2 = mn2 + m*se2
+cat("The confidence interval is (",4*lcb2,",",4*ucb2,").\n")
+```

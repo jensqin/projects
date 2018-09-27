@@ -1,0 +1,86 @@
+1                                                          The SAS System                             01:50 Monday, December 4, 2017
+
+NOTE: Copyright (c) 2002-2012 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.4 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN-SFA-T&R, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-696.3.2.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+      
+      SAS/STAT 13.1
+      SAS/ETS 13.1
+      SAS/OR 13.1
+      SAS/IML 13.1
+      SAS/QC 13.1
+
+NOTE: Additional host information:
+
+ Linux LIN X64 2.6.32-696.3.2.el6.x86_64 #1 SMP Wed Jun 7 11:51:39 EDT 2017 x86_64 Red Hat Enterprise Linux Server release 6.9 
+      (Santiago) 
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.02 seconds
+      cpu time            0.02 seconds
+      
+1          libname lib './';
+NOTE: Libref LIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/q/i/qinzhen/stat506/SAS/medicare
+2          
+3          data medicare;
+4          set lib.medicare;
+5          totpay = LINE_SRVC_CNT * AVERAGE_MEDICARE_PAYMENT_AMT;
+6          
+
+NOTE: There were 9497891 observations read from the data set LIB.MEDICARE.
+NOTE: The data set WORK.MEDICARE has 9497891 observations and 27 variables.
+NOTE: DATA statement used (Total process time):
+      real time           7.12 seconds
+      cpu time            7.10 seconds
+      
+
+2                                                          The SAS System                             01:50 Monday, December 4, 2017
+
+
+7          data lib.mdc_ttp;
+8          set medicare;
+9          
+10         run;
+
+NOTE: There were 9497891 observations read from the data set WORK.MEDICARE.
+NOTE: The data set LIB.MDC_TTP has 9497891 observations and 27 variables.
+ERROR: An I/O error has occurred on file LIB.MDC_TTP.DATA.
+NOTE: SAS set option OBS=0 and will continue to check statements. This might cause NOTE: No observations in data set.
+NOTE: DATA statement used (Total process time):
+      real time           47.54 seconds
+      cpu time            16.92 seconds
+      
+
+ERROR: Errors printed on page 2.
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           54.69 seconds
+      cpu time            24.04 seconds
+      
+
