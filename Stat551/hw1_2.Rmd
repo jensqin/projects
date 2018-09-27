@@ -1,0 +1,63 @@
+---
+title: "STATS 551 - HW1_2"
+author: "Zhen Qin"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 3.
+
+(a)
+
+Here I set m=1000.
+
+```{r}
+m=1000
+theta=(0:(m*100))/m
+y=c(42,44.5,46,46.8,47.2,50)
+post=function(t){
+  prod(1/(1+(y-t)^2)/pi/100)
+}
+prob=c()
+for(i in 0:(m*100)){
+  prob[i+1]=post(i/m)
+}
+prob=prob/sum(prob)*m
+
+# the posterior density function as a function of theta
+postdf=function(x){
+  if(x<0|x>100)
+    return(0)
+  else
+    return(prob[floor(x*1000)])
+}
+plot(theta,prob,main = 'Density')
+```
+
+(b)
+
+```{r}
+set.seed(1)
+
+# 2000 draws of theta from the posterior density
+Stheta=sample(theta,2000,replace = T,prob = prob)
+hist(Stheta,breaks = 20,main="histogram of the theta draws",xlab = "theta draws")
+```
+
+(c)
+
+```{r}
+Sy=c()
+set.seed(5)
+
+# 2000 samples from the predictive distribution
+for(i in 1:length(Stheta)){
+  Sy[i]=rcauchy(1,location = Stheta[i],scale = 1)
+}
+hist(Sy,breaks = 100,main="histogram of the predictive draws",xlab = "predictive draws")
+```

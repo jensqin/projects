@@ -1,0 +1,400 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={hw5},
+            pdfauthor={Zhen Qin},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{hw5}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Zhen Qin}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \date{}
+  \predate{}\postdate{}
+
+
+\begin{document}
+\maketitle
+
+\subsection{R Markdown}\label{r-markdown}
+
+\subsection{1.}\label{section}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(readxl)}
+\KeywordTok{library}\NormalTok{(rstan)}
+\KeywordTok{library}\NormalTok{(rstanarm)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\KeywordTok{library}\NormalTok{(mi)}
+\KeywordTok{library}\NormalTok{(Hmisc)}
+\KeywordTok{library}\NormalTok{(mice)}
+\KeywordTok{library}\NormalTok{(MCMCpack)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gss =}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(}\StringTok{'GSShappiness2010.xls'}\NormalTok{,}\DataTypeTok{col_names =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{gss =}\StringTok{ }\NormalTok{gss[,}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{8}\NormalTok{,}\DecValTok{9}\NormalTok{,}\DecValTok{11}\NormalTok{)]}
+\KeywordTok{colnames}\NormalTok{(gss) =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'hapis'}\NormalTok{,}\StringTok{'pideo'}\NormalTok{,}\StringTok{'pl'}\NormalTok{,}\StringTok{'sex'}\NormalTok{,}\StringTok{'edu'}\NormalTok{,}\StringTok{'age'}\NormalTok{,}\StringTok{'eth'}\NormalTok{)}
+
+\NormalTok{gss[gss==}\StringTok{"No answer"}\NormalTok{|gss==}\StringTok{"Don't know"}\NormalTok{]=}\OtherTok{NA}
+\NormalTok{gss$hapis[gss$hapis==}\StringTok{"Pretty happy"}\NormalTok{|gss$hapis==}\StringTok{"Very happy"}\NormalTok{]=}\StringTok{"happy"}
+\NormalTok{gss$pl[gss$pl==}\StringTok{"City gt 250000"}\NormalTok{|gss$pl==}\StringTok{"50000 to 250000"}\NormalTok{|gss$pl==}\StringTok{"Town lt 50000"}\NormalTok{]=}\StringTok{"urban"}
+\NormalTok{gss$pl[gss$pl==}\StringTok{"Big-city suburb"}\NormalTok{]=}\StringTok{"suburban"}
+\NormalTok{gss$pl[gss$pl==}\StringTok{"Country,nonfarm"}\NormalTok{|gss$pl==}\StringTok{"Farm"}\NormalTok{]=}\StringTok{"rural"}
+\NormalTok{gss$age[gss$age==}\StringTok{"89 or older"}\NormalTok{]=}\StringTok{"89"}
+\NormalTok{gss$edu =}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(gss$edu)}
+\NormalTok{gss$edu =}\StringTok{ }\KeywordTok{cut}\NormalTok{(gss$edu,}\DataTypeTok{breaks =} \DecValTok{5}\NormalTok{)}
+\KeywordTok{apply}\NormalTok{(gss,}\DecValTok{2}\NormalTok{,unique)}
+
+\NormalTok{gss =}\StringTok{ }\NormalTok{gss%>%}\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{age=}\KeywordTok{as.numeric}\NormalTok{(age))%>%}
+\StringTok{  }\KeywordTok{mutate_if}\NormalTok{(}\KeywordTok{sapply}\NormalTok{(gss,is.character),as.factor)}
+\KeywordTok{as.integer}\NormalTok{(}\KeywordTok{which}\NormalTok{(}\KeywordTok{apply}\NormalTok{(gss, }\DecValTok{1}\NormalTok{, function(x) }\KeywordTok{sum}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(x)) ==}\StringTok{ }\DecValTok{7}\NormalTok{)))}
+\NormalTok{mgss=}\KeywordTok{missing_data.frame}\NormalTok{(}\KeywordTok{as.data.frame}\NormalTok{(gss))}
+
+\KeywordTok{show}\NormalTok{(mgss)}
+\KeywordTok{summary}\NormalTok{(mgss)}
+\KeywordTok{image}\NormalTok{(mgss)}
+
+\NormalTok{gss_c =}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(gss)}
+\KeywordTok{dim}\NormalTok{(gss_c)}
+\NormalTok{fit_c =}\StringTok{ }\KeywordTok{stan_glm}\NormalTok{(hapis~.,}\DataTypeTok{data =} \NormalTok{gss_c, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =} \StringTok{"logit"}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(fit_c)}
+
+\KeywordTok{options}\NormalTok{(}\DataTypeTok{mc.cores =} \DecValTok{4}\NormalTok{)}
+\NormalTok{imput_mi =}\StringTok{ }\KeywordTok{mi}\NormalTok{(mgss, }\DataTypeTok{n.iter =} \DecValTok{30}\NormalTok{, }\DataTypeTok{n.chains =} \DecValTok{2}\NormalTok{, }\DataTypeTok{max.minutes =} \DecValTok{1}\NormalTok{)}
+\NormalTok{gss_mi =}\StringTok{ }\NormalTok{mi::}\KeywordTok{complete}\NormalTok{(imput_mi)}
+\NormalTok{fit_mi =}\StringTok{ }\KeywordTok{stan_glm}\NormalTok{(hapis~.,}\DataTypeTok{data =} \NormalTok{gss_mi$}\StringTok{`}\DataTypeTok{chain:1}\StringTok{`}\NormalTok{[,}\DecValTok{1}\NormalTok{:}\DecValTok{7}\NormalTok{], }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =} \StringTok{"logit"}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(fit_mi)}
+
+\NormalTok{imput_hmi =}\StringTok{ }\KeywordTok{aregImpute}\NormalTok{(~hapis+pideo+pl+sex+edu+age+eth,}\DataTypeTok{data=}\NormalTok{gss, }\DataTypeTok{n.impute =} \DecValTok{2}\NormalTok{)}
+\NormalTok{gss_hmi =}\StringTok{ }\KeywordTok{impute.transcan}\NormalTok{(imput_hmi,}\DataTypeTok{imputation =} \DecValTok{1}\NormalTok{,}\DataTypeTok{data =} \NormalTok{gss, }\DataTypeTok{list.out=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{pr=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{check=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{gss_hmi =}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(gss_hmi)}
+\NormalTok{fit_hmi =}\StringTok{ }\KeywordTok{stan_glm}\NormalTok{(hapis~.,}\DataTypeTok{data =} \NormalTok{gss_hmi, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =} \StringTok{"logit"}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(fit_hmi)}
+
+\NormalTok{imput_mice =}\StringTok{ }\KeywordTok{mice}\NormalTok{(gss,}\DataTypeTok{m=}\DecValTok{2}\NormalTok{)}
+\NormalTok{gss_mice =}\StringTok{ }\KeywordTok{complete}\NormalTok{(imput_mice)}
+\NormalTok{fit_mice =}\StringTok{ }\KeywordTok{stan_glm}\NormalTok{(hapis~.,}\DataTypeTok{data =} \NormalTok{gss_mice, }\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(}\DataTypeTok{link =} \StringTok{"logit"}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(fit_mice)}
+
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(fit_c$coefficients,fit_mi$coefficients, }
+                         \NormalTok{fit_hmi$coefficients,fit_mice$coefficients),}\DecValTok{2}\NormalTok{))}
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(fit_c$ses,fit_mi$ses,fit_hmi$ses,fit_mice$ses),}\DecValTok{2}\NormalTok{))}
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(fit_c$stan_summary[,}\DecValTok{11}\NormalTok{],fit_mi$stan_summary[,}\DecValTok{11}\NormalTok{],}
+                   \NormalTok{fit_hmi$stan_summary[,}\DecValTok{11}\NormalTok{],fit_mice$stan_summary[,}\DecValTok{11}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{load}\NormalTok{(}\StringTok{'.RData'}\NormalTok{)}
+
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(fit_c$coefficients,fit_mi$coefficients, }
+                         \NormalTok{fit_hmi$coefficients,fit_mice$coefficients),}\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrrrrrrrrrrrrrrrrr@{}}
+\toprule
+(Intercept) & pideoExtremely liberal & pideoExtrmly conservative &
+pideoLiberal & pideoModerate & pideoSlghtly conservative & pideoSlightly
+liberal & plsuburban & plurban & sexMale & edu(4,8{]} & edu(8,12{]} &
+edu(12,16{]} & edu(16,20{]} & age & ethBlack & ethHispanic & ethTwo or
+more race & ethWhite\tabularnewline
+\midrule
+\endhead
+-2.13 & 0.02 & 0.70 & 0.19 & -0.01 & -0.23 & -0.09 & 0.52 & 0.37 & 0.22
+& -0.23 & -0.49 & -1.07 & -1.66 & 0 & 0.63 & 0.51 & 0.34 &
+0.62\tabularnewline
+-1.42 & 0.05 & 0.68 & 0.18 & 0.00 & -0.20 & -0.12 & 0.56 & 0.34 & 0.19 &
+-0.37 & -0.77 & -1.31 & -1.88 & 0 & 0.39 & 0.13 & 0.11 &
+0.29\tabularnewline
+-1.49 & 0.14 & 0.71 & 0.23 & 0.02 & -0.21 & -0.04 & 0.57 & 0.35 & 0.20 &
+-0.36 & -0.76 & -1.30 & -1.88 & 0 & 0.38 & 0.14 & 0.14 &
+0.30\tabularnewline
+-1.87 & 0.17 & 0.66 & 0.20 & 0.00 & -0.12 & -0.01 & 0.52 & 0.30 & 0.21 &
+-0.33 & -0.69 & -1.23 & -1.81 & 0 & 0.75 & 0.60 & 0.42 &
+0.69\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(fit_c$ses,fit_mi$ses,fit_hmi$ses,fit_mice$ses),}\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrrrrrrrrrrrrrrrrr@{}}
+\toprule
+(Intercept) & pideoExtremely liberal & pideoExtrmly conservative &
+pideoLiberal & pideoModerate & pideoSlghtly conservative & pideoSlightly
+liberal & plsuburban & plurban & sexMale & edu(4,8{]} & edu(8,12{]} &
+edu(12,16{]} & edu(16,20{]} & age & ethBlack & ethHispanic & ethTwo or
+more race & ethWhite\tabularnewline
+\midrule
+\endhead
+0.85 & 0.38 & 0.31 & 0.25 & 0.20 & 0.26 & 0.26 & 0.24 & 0.18 & 0.13 &
+0.56 & 0.50 & 0.50 & 0.55 & 0 & 0.63 & 0.64 & 0.67 & 0.63\tabularnewline
+0.76 & 0.36 & 0.30 & 0.23 & 0.19 & 0.24 & 0.26 & 0.23 & 0.17 & 0.12 &
+0.49 & 0.46 & 0.46 & 0.49 & 0 & 0.58 & 0.61 & 0.63 & 0.57\tabularnewline
+0.76 & 0.34 & 0.30 & 0.23 & 0.19 & 0.25 & 0.24 & 0.23 & 0.17 & 0.12 &
+0.47 & 0.44 & 0.44 & 0.49 & 0 & 0.61 & 0.65 & 0.64 & 0.60\tabularnewline
+0.81 & 0.34 & 0.31 & 0.23 & 0.19 & 0.24 & 0.24 & 0.23 & 0.17 & 0.12 &
+0.49 & 0.45 & 0.45 & 0.49 & 0 & 0.65 & 0.70 & 0.70 & 0.64\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(fit_c$stan_summary[,}\DecValTok{11}\NormalTok{],fit_mi$stan_summary[,}\DecValTok{11}\NormalTok{],}
+                   \NormalTok{fit_hmi$stan_summary[,}\DecValTok{11}\NormalTok{],fit_mice$stan_summary[,}\DecValTok{11}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrrrrrrrrrrrrrrrrrrr@{}}
+\toprule
+(Intercept) & pideoExtremely liberal & pideoExtrmly conservative &
+pideoLiberal & pideoModerate & pideoSlghtly conservative & pideoSlightly
+liberal & plsuburban & plurban & sexMale & edu(4,8{]} & edu(8,12{]} &
+edu(12,16{]} & edu(16,20{]} & age & ethBlack & ethHispanic & ethTwo or
+more race & ethWhite & mean\_PPD & log-posterior\tabularnewline
+\midrule
+\endhead
+1520.749 & 4000 & 4000 & 2858.557 & 2589.511 & 3097.318 & 3219.386 &
+4000.000 & 3587.653 & 4000 & 1904.408 & 1680.959 & 1609.798 & 1837.937 &
+4000 & 1270.781 & 1344.419 & 1340.788 & 1255.218 & 4000 &
+1647.137\tabularnewline
+1440.744 & 4000 & 4000 & 2813.829 & 2082.013 & 2682.830 & 2857.459 &
+4000.000 & 4000.000 & 4000 & 1803.648 & 1625.482 & 1642.129 & 1705.381 &
+4000 & 1566.738 & 1600.287 & 1646.771 & 1527.039 & 4000 &
+1621.130\tabularnewline
+1701.965 & 4000 & 4000 & 2808.648 & 2593.296 & 3037.921 & 2963.117 &
+3547.107 & 4000.000 & 4000 & 2031.080 & 1794.935 & 1795.917 & 1889.368 &
+4000 & 1425.426 & 1404.657 & 1449.289 & 1389.351 & 4000 &
+1466.335\tabularnewline
+1508.627 & 4000 & 4000 & 2623.104 & 2244.281 & 2519.936 & 2813.632 &
+3654.830 & 4000.000 & 4000 & 1854.370 & 1744.431 & 1782.015 & 1863.696 &
+4000 & 1490.334 & 1552.894 & 1624.322 & 1466.316 & 4000 &
+1656.171\tabularnewline
+\bottomrule
+\end{longtable}
+
+\subsection{2.}\label{section-1}
+
+The GMM fitted density is much better than normal model in the example.
+Gaussian density does not provide a good approximation because GMM
+performs much better.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ftb =}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\StringTok{'football.asc.txt'}\NormalTok{,}\DataTypeTok{skip =} \DecValTok{7}\NormalTok{,}\DataTypeTok{header =} \NormalTok{T)}
+\NormalTok{y =}\StringTok{ }\NormalTok{ftb$spread}
+\NormalTok{x =}\StringTok{ }\NormalTok{ftb$favorite -}\StringTok{ }\NormalTok{ftb$underdog}
+\NormalTok{d =}\StringTok{ }\NormalTok{y -}\StringTok{ }\NormalTok{x}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(mvtnorm)}
+
+\NormalTok{GibbsGM <-}\StringTok{ }\NormalTok{function(obs, par, }\DataTypeTok{Niter =} \DecValTok{5000}\NormalTok{)\{}
+  \NormalTok{mu =}\StringTok{ }\NormalTok{par$mu}
+  \NormalTok{Sigma =}\StringTok{ }\NormalTok{par$Sigma}
+  \NormalTok{pi =}\StringTok{ }\NormalTok{par$pi}
+  \NormalTok{K =}\StringTok{ }\KeywordTok{length}\NormalTok{(pi)}
+  \NormalTok{d =}\StringTok{ }\KeywordTok{dim}\NormalTok{(Sigma[[}\DecValTok{1}\NormalTok{]])[}\DecValTok{1}\NormalTok{]}
+  \NormalTok{n =}\StringTok{ }\KeywordTok{length}\NormalTok{(obs[,}\DecValTok{1}\NormalTok{])}
+  \NormalTok{musamples <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{, }\KeywordTok{c}\NormalTok{(Niter, K, d))}
+  \NormalTok{Sigmasamples <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{, }\KeywordTok{c}\NormalTok{(Niter, K, d, d))}
+  \NormalTok{pisamples <-}\StringTok{ }\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{, }\KeywordTok{c}\NormalTok{(Niter, K))}
+  \NormalTok{for(iter in }\DecValTok{1}\NormalTok{:Niter)\{}
+    \CommentTok{# sample labels}
+    \NormalTok{z =}\StringTok{ }\KeywordTok{apply}\NormalTok{(obs, }\DecValTok{1}\NormalTok{, function(x)\{}
+      \NormalTok{temp =}\StringTok{ }\KeywordTok{log}\NormalTok{(pi +}\StringTok{ }\FloatTok{1e-10}\NormalTok{) +}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:K, function(k)}
+        \NormalTok{mvtnorm::}\KeywordTok{dmvnorm}\NormalTok{(x, mu[k, ], Sigma[[k]], }\DataTypeTok{log =} \OtherTok{TRUE}\NormalTok{))}
+      \NormalTok{temp =}\StringTok{ }\KeywordTok{exp}\NormalTok{(temp -}\StringTok{ }\KeywordTok{max}\NormalTok{(temp))}
+      \NormalTok{indicator =}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\NormalTok{:K, }\DataTypeTok{size =} \DecValTok{1}\NormalTok{, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{prob =} \NormalTok{temp/}\KeywordTok{sum}\NormalTok{(temp))}
+      \KeywordTok{return}\NormalTok{(indicator)}
+    \NormalTok{\})}
+    \CommentTok{# sample parameters}
+    \NormalTok{pi <-}\StringTok{ }\NormalTok{MCMCpack::}\KeywordTok{rdirichlet}\NormalTok{(}\DecValTok{1}\NormalTok{, }\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, K) +}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\NormalTok{:K, function(k) }\KeywordTok{sum}\NormalTok{(z ==k)))}
+    \NormalTok{for(k in }\DecValTok{1}\NormalTok{:K)\{}
+      \NormalTok{nk <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(z ==}\StringTok{ }\NormalTok{k)}
+      \NormalTok{if(nk >}\StringTok{ }\DecValTok{1}\NormalTok{)\{}
+        \NormalTok{mutemp <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(}\KeywordTok{as.matrix}\NormalTok{(obs[z ==}\StringTok{ }\NormalTok{k,]), }\DecValTok{2}\NormalTok{, mean)}
+        \NormalTok{diff <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(}\KeywordTok{as.matrix}\NormalTok{(obs[z==k, ]), }\DecValTok{1}\NormalTok{, function(x) x -}\StringTok{ }\NormalTok{mu[k, ])}
+      \NormalTok{\}}
+      \NormalTok{if(nk ==}\StringTok{ }\DecValTok{1}\NormalTok{)\{}
+        \NormalTok{mutemp <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(obs[z ==}\StringTok{ }\NormalTok{k, ])}
+        \NormalTok{diff <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(obs[z==k, ]) -}\StringTok{ }\NormalTok{mu[k,]}
+      \NormalTok{\}}
+      \NormalTok{if(nk >}\StringTok{ }\DecValTok{0}\NormalTok{)\{}
+        \NormalTok{mu[k, ] <-}\StringTok{ }\KeywordTok{rmvnorm}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DataTypeTok{mean =} \NormalTok{mutemp, }\DataTypeTok{sigma =} \NormalTok{Sigma[[k]]/nk)}
+        \NormalTok{Sigma[[k]] <-}\StringTok{ }\KeywordTok{riwish}\NormalTok{(nk+d}\DecValTok{+1}\NormalTok{, }\KeywordTok{t}\NormalTok{(diff)%*%diff  ) }
+      \NormalTok{\}}
+      \NormalTok{Sigmasamples[iter, k,,] <-}\StringTok{ }\NormalTok{Sigma[[k]]}
+    \NormalTok{\}}
+    \NormalTok{pisamples[iter, ] <-}\StringTok{ }\NormalTok{pi}
+    \NormalTok{musamples[iter,,] <-}\StringTok{ }\NormalTok{mu}
+  \NormalTok{\}}
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{mu =} \NormalTok{musamples, }\DataTypeTok{Sigma =} \NormalTok{Sigmasamples, }\DataTypeTok{pi =} \NormalTok{pisamples))}
+\NormalTok{\}}
+
+\NormalTok{par <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{pi =} \KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{/}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{), }\DataTypeTok{mu =} \KeywordTok{array}\NormalTok{(}\KeywordTok{quantile}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(obs), }\KeywordTok{seq}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\FloatTok{0.95}\NormalTok{, }\DataTypeTok{length.out =} \DecValTok{3}\NormalTok{)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{)), }\DataTypeTok{Sigma =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\KeywordTok{diag}\NormalTok{(}\DecValTok{1}\NormalTok{)), }\DecValTok{3}\NormalTok{))}
+\NormalTok{obs <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(d)}
+
+\NormalTok{gibbsresult <-}\StringTok{ }\KeywordTok{GibbsGM} \NormalTok{(obs, par, }\DataTypeTok{Niter =} \DecValTok{2000}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{load}\NormalTok{(}\StringTok{'.RData'}\NormalTok{)}
+\NormalTok{K <-}\StringTok{ }\DecValTok{3}
+ \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(K, K))}
+\NormalTok{for(k in }\DecValTok{1}\NormalTok{:K)\{}\KeywordTok{plot}\NormalTok{(gibbsresult$pi[, k], }\DataTypeTok{ylab =} \KeywordTok{expression}\NormalTok{(pi[k]), }\DataTypeTok{xlab =} \StringTok{''}\NormalTok{, }\DataTypeTok{type =} \StringTok{'l'}\NormalTok{)\}}
+\NormalTok{for(k in }\DecValTok{1}\NormalTok{:K)\{}
+  \KeywordTok{plot}\NormalTok{(gibbsresult$mu[,k,}\DecValTok{1}\NormalTok{], }\DataTypeTok{ylab =} \KeywordTok{paste}\NormalTok{(}\StringTok{"mu"}\NormalTok{, k, j), }\DataTypeTok{xlab =} \StringTok{''}\NormalTok{, }\DataTypeTok{type =} \StringTok{'l'}\NormalTok{)}
+\NormalTok{\}}
+
+\NormalTok{m_mu =}\StringTok{ }\KeywordTok{colMeans}\NormalTok{(}\KeywordTok{tail}\NormalTok{(gibbsresult$mu[,,}\DecValTok{1}\NormalTok{]))}
+\NormalTok{m_sigma =}\StringTok{ }\KeywordTok{colMeans}\NormalTok{(}\KeywordTok{tail}\NormalTok{(}\KeywordTok{sqrt}\NormalTok{(gibbsresult$Sigma[,,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{])))}
+\NormalTok{m_pi =}\StringTok{ }\KeywordTok{colMeans}\NormalTok{(}\KeywordTok{tail}\NormalTok{(gibbsresult$pi[,]))}
+\NormalTok{gmmdensity =}\StringTok{ }\NormalTok{function(x)\{}
+  \NormalTok{m_pi[}\DecValTok{1}\NormalTok{]*}\KeywordTok{dnorm}\NormalTok{(x,m_mu[}\DecValTok{1}\NormalTok{],m_sigma[}\DecValTok{1}\NormalTok{])+m_pi[}\DecValTok{2}\NormalTok{]*}\KeywordTok{dnorm}\NormalTok{(x,m_mu[}\DecValTok{2}\NormalTok{],m_sigma[}\DecValTok{2}\NormalTok{])+m_pi[}\DecValTok{3}\NormalTok{]*}\KeywordTok{dnorm}\NormalTok{(x,m_mu[}\DecValTok{3}\NormalTok{],m_sigma[}\DecValTok{3}\NormalTok{])}
+\NormalTok{\}}
+
+\NormalTok{xrange=}\KeywordTok{seq}\NormalTok{(-}\DecValTok{50}\NormalTok{,}\DecValTok{49}\NormalTok{,}\DataTypeTok{length.out =} \DecValTok{2240}\NormalTok{)}
+\NormalTok{yrange=}\KeywordTok{gmmdensity}\NormalTok{(xrange)}
+\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x=}\NormalTok{d,}\DataTypeTok{xrange=}\NormalTok{xrange,}\DataTypeTok{y=}\NormalTok{yrange)%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{()+}\KeywordTok{geom_histogram}\NormalTok{(}\KeywordTok{aes}\NormalTok{(x,..density..),}\DataTypeTok{binwidth =} \DecValTok{1}\NormalTok{,}\DataTypeTok{fill=}\StringTok{'white'}\NormalTok{,}\DataTypeTok{color=}\StringTok{'red'}\NormalTok{)+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(xrange,yrange))}
+
+\NormalTok{ynormrange=}\KeywordTok{dnorm}\NormalTok{(xrange,}\DataTypeTok{mean=}\KeywordTok{mean}\NormalTok{(d),}\DataTypeTok{sd=}\KeywordTok{sd}\NormalTok{(d))}
+\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x=}\NormalTok{d,}\DataTypeTok{xrange=}\NormalTok{xrange,ynormrange)%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{()+}\KeywordTok{geom_histogram}\NormalTok{(}\KeywordTok{aes}\NormalTok{(x,..density..),}\DataTypeTok{binwidth =} \DecValTok{1}\NormalTok{,}\DataTypeTok{fill=}\StringTok{'white'}\NormalTok{,}\DataTypeTok{color=}\StringTok{'red'}\NormalTok{)+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(xrange,ynormrange))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{hw5_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+
+\end{document}

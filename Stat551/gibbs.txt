@@ -1,0 +1,61 @@
+Gibbs_GMM = function(dat, k, N = 100){
+  burnin = floor(N * 0.4)
+  
+  n = length(dat)
+  alphak = rep(10, k)
+  betak = rep(10, k)
+  lambdak = rep(1, k)
+  gammak = rep(1/k, k)
+  Z = sample(1:k, n, replace = T)
+  nk = rep(0, k)
+  sigma2 = matrix(rep(NA,N*k),nrow = N)
+  mu = matrix(rep(NA,N*k),nrow = N)
+  P = matrix(rep(NA,N*k),nrow = N)
+  prob = matrix(rep(NA,n*k),nrow=n)
+  for(i in 1:N){
+    nk=rep(0,k)
+    for(j in 1:k){
+      nk[j]=sum(Z==j)
+    }
+    dz = as.data.frame(cbind(dat,Z))
+    
+    P[i,] = rdirichlet(1, gammak + nk)
+    dstat = dz%>%group_by(Z)%>%summarise(dsum=mean(dat),s2=(n()-1)*var(dat))
+    sigmashape = (lambdak + nk +3)/2
+    sigmascale = (lambdak*dstat$s2+betak+dstat$s2-
+                    (lambdak*alphak+dstat$dsum)^2/(lambdak+nk))/2
+    
+    for(j in 1:k){
+      sigma2[i,j] = rinvgamma(1, sigmashape[j], sigmascale[j])
+    }
+    
+    mucenter = (lambdak*alphak+dstat$dsum)/(lambdak+nk)
+    muscale = sigma2[i,]/(lambdak+nk)
+    for(j in 1:k){
+      mu[i,j] = rnorm(1,mucenter[j], muscale[j])
+    }
+    
+    for(j in 1:n){
+      prob[j,] = P[i,]/sqrt(sigma2[i,])*exp(-(dat[j]-mu[i])^2/(2*sigma2[i,]))
+    }
+    Z = apply(prob,1,function(x){sample(1:k,1,prob = x)})
+  }
+  
+  return(list(mu[burnin:N,],sigma2[burnin:N,],P[burnin:N,],Z))
+}
+k = 2
+result = Gibbs_GMM(d, k, 1000)
+mu = as.data.frame(result[[1]])
+sigma2 = as.data.frame(result[[2]])
+P = as.data.frame(result[[3]])
+par(mfrow=c(2,3))
+for(i in 1:k){
+  plot(mu[,i],type='l')
+  plot(sigma2[,i],type='l')
+  plot(P[,i],type='l')
+}
+
+xofd <- seq(-40, 40, length=1000)
+gmmdensity1 <- dnorm(xofd, mean=mean(mu[400:601,1]), sd=sqrt(mean(sigma2[400:601,1])))
+gmmdensity2 <- dnorm(xofd, mean=mean(mu[400:601,2]), sd=sqrt(mean(sigma2[400:601,2])))
+gmmdensity = mean(P[400:601,1])*gmmdensity1+mean(P[400:601,2])*gmmdensity2

@@ -1,0 +1,220 @@
+---
+title: "hw5"
+author: "Zhen Qin"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+## 1.
+
+```{r, message=FALSE, include=FALSE}
+library(readxl)
+library(rstan)
+library(rstanarm)
+library(dplyr)
+library(mi)
+library(Hmisc)
+library(mice)
+library(MCMCpack)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r, eval=FALSE, include=TRUE}
+gss = read_excel('GSShappiness2010.xls',col_names = TRUE)
+gss = gss[,c(2,3,6,7,8,9,11)]
+colnames(gss) = c('hapis','pideo','pl','sex','edu','age','eth')
+
+gss[gss=="No answer"|gss=="Don't know"]=NA
+gss$hapis[gss$hapis=="Pretty happy"|gss$hapis=="Very happy"]="happy"
+gss$pl[gss$pl=="City gt 250000"|gss$pl=="50000 to 250000"|gss$pl=="Town lt 50000"]="urban"
+gss$pl[gss$pl=="Big-city suburb"]="suburban"
+gss$pl[gss$pl=="Country,nonfarm"|gss$pl=="Farm"]="rural"
+
+# here I replace missing value with 89 because it is extreme
+gss$age[gss$age=="89 or older"]="89"
+gss$edu = as.numeric(gss$edu)
+gss$edu = cut(gss$edu,breaks = 5)
+apply(gss,2,unique)
+
+gss = gss%>%mutate(age=as.numeric(age))%>%
+  mutate_if(sapply(gss,is.character),as.factor)
+as.integer(which(apply(gss, 1, function(x) sum(is.na(x)) == 7)))
+mgss=missing_data.frame(as.data.frame(gss))
+
+show(mgss)
+summary(mgss)
+image(mgss)
+
+gss_c = na.omit(gss)
+dim(gss_c)
+fit_c = stan_glm(hapis~.,data = gss_c, family = binomial(link = "logit"))
+summary(fit_c)
+
+options(mc.cores = 2)
+imput_mi = mi(mgss, n.iter = 30, n.chains = 2, max.minutes = 4)
+gss_mi = mi::complete(imput_mi)
+fit_mi = stan_glm(hapis~.,data = gss_mi$`chain:1`[,1:7], family = binomial(link = "logit"))
+summary(fit_mi)
+
+imput_hmi = aregImpute(~hapis+pideo+pl+sex+edu+age+eth,data=gss, n.impute = 2)
+gss_hmi = impute.transcan(imput_hmi,imputation = 1,data = gss, list.out=TRUE, pr=FALSE, check=FALSE)
+gss_hmi = as.data.frame(gss_hmi)
+fit_hmi = stan_glm(hapis~.,data = gss_hmi, family = binomial(link = "logit"))
+summary(fit_hmi)
+
+imput_mice = mice(gss,m=2)
+gss_mice = complete(imput_mice)
+fit_mice = stan_glm(hapis~.,data = gss_mice, family = binomial(link = "logit"))
+summary(fit_mice)
+
+knitr::kable(round(rbind(fit_c$coefficients,fit_mi$coefficients, 
+                         fit_hmi$coefficients,fit_mice$coefficients),2))
+knitr::kable(round(rbind(fit_c$ses,fit_mi$ses,fit_hmi$ses,fit_mice$ses),2))
+knitr::kable(rbind(fit_c$stan_summary[,11],fit_mi$stan_summary[,11],
+                   fit_hmi$stan_summary[,11],fit_mice$stan_summary[,11]))
+
+corlable = c(cor(fit_c$fitted.values,as.numeric(gss$hapis[idfull])),
+cor(fit_mi$fitted.values[idfull],as.numeric(gss$hapis[idfull])),
+cor(fit_hmi$fitted.values[idfull],as.numeric(gss$hapis[idfull])),
+cor(fit_mice$fitted.values[idfull],as.numeric(gss$hapis[idfull])))
+```
+
+In the 1st table, it is clear that most coefficients are similar but some are different such as ethHispanic and ethWhite.
+
+In the 2nd table, most standard errors of data by imputations decrease, i.e. estimates are more stable. mi and hmsc are better than mice.
+
+In the 3rd table, many effective sample sizes increase thanks to imputations, but mice and mi lose some effective samples. hmisc are better than others.
+
+Generally speaking, multiple imputations improve the performance of GLM. In this case hmisc can gives satisfactory results. And their correlations of true lable and fitted values does not change much.
+
+```{r}
+load('.RData')
+idfull = rowSums(is.na(gss))==0
+
+mcoef=rbind(fit_c$coefficients,fit_mi$coefficients, 
+            fit_hmi$coefficients,fit_mice$coefficients)
+mses=rbind(fit_c$ses,fit_mi$ses,fit_hmi$ses,fit_mice$ses)
+mneff=rbind(fit_c$stan_summary[,11],fit_mi$stan_summary[,11],
+            fit_hmi$stan_summary[,11],fit_mice$stan_summary[,11])
+rownames(mcoef)=c('complete','mi','hmisc','mice')
+rownames(mses)=c('complete','mi','hmisc','mice')
+rownames(mneff)=c('complete','mi','hmisc','mice')
+
+# cor
+corlable
+
+# coefficients
+knitr::kable(round(mcoef,2))
+
+# standard error
+knitr::kable(round(mses,2))
+rowMeans(mses)
+
+# effective sample size
+knitr::kable(rbind(mneff))
+rowMeans(mneff)
+
+```
+
+## 2.
+
+The GMM fitted density is much better than normal model in the example. Gaussian density does not provide a good approximation because GMM performs much better.
+
+```{r, eval=FALSE, include=TRUE}
+ftb = read.table('football.asc.txt',skip = 7,header = T)
+y = ftb$spread
+x = ftb$favorite - ftb$underdog
+d = y - x
+```
+
+```{r, eval=FALSE, include=TRUE}
+library(mvtnorm)
+
+GibbsGM <- function(obs, par, Niter = 5000){
+  mu = par$mu
+  Sigma = par$Sigma
+  pi = par$pi
+  K = length(pi)
+  d = dim(Sigma[[1]])[1]
+  n = length(obs[,1])
+  musamples <- array(0, c(Niter, K, d))
+  Sigmasamples <- array(0, c(Niter, K, d, d))
+  pisamples <- array(0, c(Niter, K))
+  for(iter in 1:Niter){
+    # sample labels
+    z = apply(obs, 1, function(x){
+      temp = log(pi + 1e-10) + sapply(1:K, function(k)
+        mvtnorm::dmvnorm(x, mu[k, ], Sigma[[k]], log = TRUE))
+      temp = exp(temp - max(temp))
+      indicator = sample(1:K, size = 1, replace = TRUE, prob = temp/sum(temp))
+      return(indicator)
+    })
+    # sample parameters
+    pi <- MCMCpack::rdirichlet(1, rep(1, K) + sapply(1:K, function(k) sum(z ==k)))
+    for(k in 1:K){
+      nk <- sum(z == k)
+      if(nk > 1){
+        mutemp <- apply(as.matrix(obs[z == k,]), 2, mean)
+        diff <- apply(as.matrix(obs[z==k, ]), 1, function(x) x - mu[k, ])
+      }
+      if(nk == 1){
+        mutemp <- as.matrix(obs[z == k, ])
+        diff <- as.matrix(obs[z==k, ]) - mu[k,]
+      }
+      if(nk > 0){
+        mu[k, ] <- rmvnorm(1, mean = mutemp, sigma = Sigma[[k]]/nk)
+        Sigma[[k]] <- riwish(nk+d+1, t(diff)%*%diff  ) 
+      }
+      Sigmasamples[iter, k,,] <- Sigma[[k]]
+    }
+    pisamples[iter, ] <- pi
+    musamples[iter,,] <- mu
+  }
+  return(list(mu = musamples, Sigma = Sigmasamples, pi = pisamples))
+}
+
+par <- list(pi = rep(1/3, 3), mu = array(quantile(as.numeric(obs), seq(0.05, 0.95, length.out = 3)), c(3, 1)), Sigma = rep(list(diag(1)), 3))
+obs <- as.matrix(d)
+
+gibbsresult <- GibbsGM (obs, par, Niter = 2000)
+```
+
+```{r}
+load('.RData')
+K <- 3
+ par(mfrow = c(K, K))
+for(k in 1:K){plot(gibbsresult$pi[, k], ylab = expression(pi[k]), xlab = '', type = 'l')}
+for(k in 1:K){
+  plot(gibbsresult$mu[,k,1], ylab = paste("mu", k, j), xlab = '', type = 'l')
+}
+
+m_mu = colMeans(tail(gibbsresult$mu[,,1]))
+m_sigma = colMeans(tail(sqrt(gibbsresult$Sigma[,,1,1])))
+m_pi = colMeans(tail(gibbsresult$pi[,]))
+gmmdensity = function(x){
+  m_pi[1]*dnorm(x,m_mu[1],m_sigma[1])+m_pi[2]*dnorm(x,m_mu[2],m_sigma[2])+m_pi[3]*dnorm(x,m_mu[3],m_sigma[3])
+}
+
+xrange=seq(-50,49,length.out = 2240)
+yrange=gmmdensity(xrange)
+data.frame(x=d,xrange=xrange,y=yrange)%>%
+  ggplot()+geom_histogram(aes(x,..density..),binwidth = 1,fill='white',color='red')+
+  geom_line(aes(xrange,yrange))
+```
+
+```{r}
+ynormrange=dnorm(xrange,mean=mean(d),sd=sd(d))
+data.frame(x=d,xrange=xrange,ynormrange)%>%
+  ggplot()+geom_histogram(aes(x,..density..),binwidth = 1,fill='white',color='red')+
+  geom_line(aes(xrange,ynormrange))
+```
+
+
